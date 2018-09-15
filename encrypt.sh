@@ -118,7 +118,7 @@ function check_decryption {
 
   done
   echo -n "Decrypted seed is: "
-  echo `echo $SEED_DECRYPTED_FINAL | cut -c1-20`
+  echo $SEED_DECRYPTED_FINAL | cut -c1-20
   echo "Check if the begining it's identical with your input seed."
   echo "Decryption test finished."
 
