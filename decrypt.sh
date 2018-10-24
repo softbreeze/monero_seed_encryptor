@@ -66,6 +66,8 @@ function check_decryption {
   done
   echo -n "Decrypted seed is: "
   echo $SEED_DECRYPTED_FINAL
+  echo -n "Decrypted SEED Hash: "
+  echo $SEED_DECRYPTED_FINAL | sha512sum | cut -d " " -f 1
 
 }
 

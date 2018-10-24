@@ -22,6 +22,7 @@ function ask_for_pass {
 function ask_for_seed_to_encrypt {
   echo "Type seed (only 24 first words using only small letters):"
   read -s SEED_TO_ENCRYPT
+  SEED_TESTHASH=`echo $SEED_TO_ENCRYPT | sha512sum | cut -d " " -f 1`
   for i in {1..24}
   do
     #echo "Searching for word number $i"
@@ -120,6 +121,11 @@ function check_decryption {
   echo -n "Decrypted seed is: "
   echo $SEED_DECRYPTED_FINAL | cut -c1-20
   echo "Check if the begining it's identical with your input seed."
+  echo -n "          SEED Hash: "
+  echo $SEED_TESTHASH
+
+  echo $SEED_DECRYPTED_FINAL | sha512sum | cut -d " " -f 1
+  echo "Check if SHA512 SUM of a seed is identical."
   echo "Decryption test finished."
 
 }
