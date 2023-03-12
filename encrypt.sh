@@ -76,14 +76,13 @@ function encrypt_seed {
   do
     let COUNTER2=COUNTER1+4
     TMPN=`echo $PASS_FINAL | cut -c $COUNTER1-$COUNTER2 | sed 's/^0*//' `
-    until [[ $TMPN -le $words ]]; do
-      let TMPN=TMPN-words
-    done
     let COUNTER1=COUNTER1+5
-    #echo -n $TMPN
     TMPN2=${SEEDARRAY[$i]}
     let TMPN=TMPN+TMPN2
     unset TMPN2
+    until [[ $TMPN -le $words ]]; do
+      let TMPN=TMPN-words
+    done
     LENGHT=`echo -n $SEED | wc -m`
     if [ $LENGHT -eq 0 ]
     then
@@ -94,6 +93,9 @@ function encrypt_seed {
     #echo " $TMPN"
 
   done
+echo "--------------------------------------------------------------------------------------------------------------------------------------------"
+echo "Endrypted SEED is: $SEED"
+echo "--------------------------------------------------------------------------------------------------------------------------------------------"
 
 }
 
@@ -112,18 +114,28 @@ function check_decryption {
     SEED_DECRYPTED=`echo "$SEED" | cut -d "-" -f $i`
     let COUNTER1=COUNTER1+5
     #echo -n "$SEED_DECRYPTED minus $TMPN equals"
+    until [[ $TMPN -le $words ]]; do
+      let TMPN=TMPN-words
+    done
     let SEED_DECRYPTED=SEED_DECRYPTED-TMPN
+    until [[ $SEED_DECRYPTED -gt 0 ]]; do
+      let SEED_DECRYPTED=SEED_DECRYPTED+words
+    done
+    until [[ $SEED_DECRYPTED -le $words ]]; do
+      let SEED_DECRYPTED=SEED_DECRYPTED-words
+    done
     #echo " $SEED_DECRYPTED, which is ${WORDARRAY[$SEED_DECRYPTED]}"
     SEED_DECRYPTED_FINAL="$SEED_DECRYPTED_FINAL ${WORDARRAY[$SEED_DECRYPTED]}"
+    #echo $SEED_DECRYPTED_FINAL
     SEED_DECRYPTED=""
 
   done
   echo -n "Decrypted seed is: "
   echo $SEED_DECRYPTED_FINAL | cut -c1-20
   echo "Check if the begining it's identical with your input seed."
-  echo -n "          SEED Hash: "
+  echo -n "           SEED Hash: "
   echo $SEED_TESTHASH
-
+  echo -n " decrypted SEED Hash: "
   echo $SEED_DECRYPTED_FINAL | sha512sum | cut -d " " -f 1
   echo "Check if SHA512 SUM of a seed is identical."
   echo "Decryption test finished."
@@ -140,4 +152,4 @@ create_salt
 encrypt_seed
 check_decryption
 echo ""
-echo $SEED
+

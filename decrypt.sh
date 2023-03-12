@@ -59,15 +59,24 @@ function check_decryption {
       let TMPN=TMPN-words
     done
     let SEED_DECRYPTED=SEED_DECRYPTED-TMPN
+    until [[ $SEED_DECRYPTED -gt 0 ]]; do
+      let SEED_DECRYPTED=SEED_DECRYPTED+words
+    done
+    until [[ $SEED_DECRYPTED -le $words ]]; do
+      let SEED_DECRYPTED=SEED_DECRYPTED-words
+    done
     #echo " $SEED_DECRYPTED, which is ${WORDARRAY[$SEED_DECRYPTED]}"
     SEED_DECRYPTED_FINAL="$SEED_DECRYPTED_FINAL ${WORDARRAY[$SEED_DECRYPTED]}"
+    #echo $SEED_DECRYPTED_FINAL
     SEED_DECRYPTED=""
 
   done
+  echo "--------------------------------------------------------------------------------------------------------------------------------------------"
   echo -n "Decrypted seed is: "
   echo $SEED_DECRYPTED_FINAL
   echo -n "Decrypted SEED Hash: "
   echo $SEED_DECRYPTED_FINAL | sha512sum | cut -d " " -f 1
+  echo "--------------------------------------------------------------------------------------------------------------------------------------------"
 
 }
 
